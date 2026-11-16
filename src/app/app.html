@@ -1,0 +1,55 @@
+<main class="min-h-screen bg-slate-50 p-4 md:p-8">
+  <div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Nagłówek -->
+    <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Finance Tracker</h1>
+        <p class="text-sm text-slate-500">Zarządzaj swoim budżetem domowym w czasie rzeczywistym</p>
+      </div>
+      <button type="button" (click)="transactionService.loadMockData()"
+              class="self-start sm:self-auto px-4 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition cursor-pointer">
+        Załaduj dane przykładowe
+      </button>
+    </header>
+
+    <!-- 3 Kafelki podsumowania -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <p class="text-sm font-medium text-slate-500">Aktualne saldo</p>
+        <p class="text-2xl font-bold mt-1"
+           [ngClass]="transactionService.balance() >= 0 ? 'text-slate-900' : 'text-red-600'">
+          {{ transactionService.balance() | number:'1.2-2' }} PLN
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <p class="text-sm font-medium text-slate-500">Przychody</p>
+        <p class="text-2xl font-bold text-emerald-600 mt-1">
+          +{{ transactionService.totalIncome() | number:'1.2-2' }} PLN
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <p class="text-sm font-medium text-slate-500">Wydatki</p>
+        <p class="text-2xl font-bold text-red-600 mt-1">
+          -{{ transactionService.totalExpense() | number:'1.2-2' }} PLN
+        </p>
+      </div>
+    </section>
+
+    <!-- Główna siatka: Lewa kolumna (Formularz + Wykres), Prawa kolumna (Lista) -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <div class="lg:col-span-1 space-y-6">
+        <app-transaction-form />
+        <app-expense-chart />
+      </div>
+      <div class="lg:col-span-2">
+        <app-transaction-list />
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<router-outlet />

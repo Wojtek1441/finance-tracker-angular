@@ -1,0 +1,76 @@
+<div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <h2 class="text-lg font-semibold text-slate-800">Historia transakcji</h2>
+
+    <!-- Pasek filtrów -->
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Wyszukiwarka -->
+      <input type="text"
+             [value]="searchQuery()"
+             (input)="onSearchChange($event)"
+             placeholder="Szukaj po nazwie..."
+             class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+
+      <!-- Filtr kategorii -->
+      <select [value]="selectedCategory()"
+              (change)="onCategoryChange($event)"
+              class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat === 'all' ? 'Wszystkie kategorie' : cat }}</option>
+        }
+      </select>
+
+      <!-- Przełącznik typu -->
+      <div class="inline-flex rounded-lg border border-slate-200 p-0.5 bg-slate-100">
+        <button type="button" (click)="onTypeChange('all')"
+                [ngClass]="selectedType() === 'all' ? 'bg-white shadow-sm text-slate-800' : 'text-slate-600'"
+                class="px-3 py-1 text-xs font-medium rounded-md transition cursor-pointer">
+          Wszystkie
+        </button>
+        <button type="button" (click)="onTypeChange('income')"
+                [ngClass]="selectedType() === 'income' ? 'bg-white shadow-sm text-emerald-600' : 'text-slate-600'"
+                class="px-3 py-1 text-xs font-medium rounded-md transition cursor-pointer">
+          Przychody
+        </button>
+        <button type="button" (click)="onTypeChange('expense')"
+                [ngClass]="selectedType() === 'expense' ? 'bg-white shadow-sm text-red-600' : 'text-slate-600'"
+                class="px-3 py-1 text-xs font-medium rounded-md transition cursor-pointer">
+          Wydatki
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista transakcji -->
+  <div class="divide-y divide-slate-100">
+    @for (item of filteredTransactions(); track item.id) {
+      <div class="py-3.5 flex items-center justify-between hover:bg-slate-50 px-2 rounded-lg transition">
+        <div class="flex flex-col">
+          <span class="font-medium text-slate-800">{{ item.title }}</span>
+          <div class="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+            <span class="bg-slate-100 px-2 py-0.5 rounded text-slate-600">{{ item.category }}</span>
+            <span>•</span>
+            <span>{{ item.date | date:'dd.MM.yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <span class="font-semibold text-sm"
+                [ngClass]="item.type === 'income' ? 'text-emerald-600' : 'text-red-600'">
+            {{ item.amount | currencySign:item.type }}
+          </span>
+
+          <button type="button" (click)="deleteTransaction(item.id)"
+                  title="Usuń transakcję"
+                  class="text-slate-400 hover:text-red-600 transition p-1 cursor-pointer">
+            ✕
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <div class="text-center py-10 text-slate-500 text-sm">
+        Brak transakcji spełniających wybrane kryteria.
+      </div>
+    }
+  </div>
+</div>
